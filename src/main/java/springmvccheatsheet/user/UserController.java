@@ -1,5 +1,9 @@
 package springmvccheatsheet.user;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,24 +14,35 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-	private static User user;
+	private static Map<String, UserDTO> users = new HashMap<String, UserDTO>();
 	
-	@ResponseBody
 	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
-	public User getUser(@PathVariable String id) {
-		User user; 
+	public @ResponseBody UserDTO getUser(@PathVariable String id) {
+		UserDTO user; 
 		
-		// ...
-		user = UserController.user;
+		// This would be replaced with actual business code
+		user = users.get(id);
 		
 		return user;
 	}
 	
 	@RequestMapping(value = "/save", method = RequestMethod.POST)
-	public void saveUser(@RequestBody User user) {
+	public @ResponseBody String saveUser(@RequestBody UserDTO user) {
 		
-		// ...
+		// Mock persistence
+		user.setId(UUID.randomUUID().toString());
+		users.put(user.getId(), user);
 		
-		UserController.user = user;
+		return user.getId();
+	}
+	
+	@RequestMapping(value = "/get-all-users", method = RequestMethod.GET)
+	public @ResponseBody Iterable<UserDTO> getAllUsers() {
+		Iterable<UserDTO> allUsers; 
+		
+		// This would be replaced with actual business code
+		allUsers = users.values();
+		
+		return allUsers;
 	}
 }

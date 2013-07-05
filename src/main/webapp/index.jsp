@@ -5,17 +5,47 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 	</head>
 	<body>
+		<p>Open the console and click "Add user" and "List users" to execute the tests</p>
+		<br>
+		<input type="text" id="user-first-name" value="John"><input type="text" id="user-last-name" value="Doe"><button id="add-user">Add user</button>
+		<br>
+		<button id="list-users">List users</button>
+	
 		<script type="text/javascript">
-$.post("commands/user/save", {id: "xxx", firstName: 'John', lastName: 'Doe'}, null, 'json')
-.done(function() {
+		
+$("#add-user").click(function() {
+
+	var userDTO = {firstName: $("#user-first-name").val(), lastName: $("#user-last-name").val()};
 	
-	$.get("commands/user/get/xxx")
-	.done(function(user) {
-		$(document.body).text(JSON.stringify(user));
+	console.log("--> POST test: post " + JSON.stringify(userDTO)) + " to URL commands/user/save";
+	
+	$.ajax({
+		method: 'POST',
+		url: "commands/user/save",
+		contentType: 'application/json',
+		data: JSON.stringify(userDTO)
+	})
+	.done(function(id) {
+		
+		console.log("<-- POST successful, received: created user id: " + id);
+		
+		console.log("--> GET test: get from URL commands/user/get/" + id);
+		
+		$.get("commands/user/get/" + id)
+		.done(function(resultUserDTO) {
+			console.log("<-- GET successful, received: " + JSON.stringify(resultUserDTO));
+		});
 	});
-	
 });
 		
+$("#list-users").click(function() {
+	console.log("--> GET test: get from URL commands/user/get-all-users");
+	
+	$.get("commands/user/get-all-users")
+	.done(function(resultUserDTOs) {
+		console.log("<-- GET successful, received: " + JSON.stringify(resultUserDTOs));
+	});
+});
 		
 		</script>	
 	</body>
